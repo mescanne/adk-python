@@ -79,6 +79,8 @@ class OAuth2Auth(BaseModelWithConfig):
   refresh_token: Optional[str] = None
   expires_at: Optional[int] = None
   expires_in: Optional[int] = None
+  audience: Optional[str] = None
+  prompt: Optional[str] = None
 
 
 class ServiceAccountCredential(BaseModelWithConfig):

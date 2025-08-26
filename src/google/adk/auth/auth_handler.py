@@ -188,8 +188,15 @@ class AuthHandler:
         scope=" ".join(scopes),
         redirect_uri=auth_credential.oauth2.redirect_uri,
     )
+    params = {"access_type": "offline"}
+    if auth_credential.oauth2.prompt:
+      params["prompt"] = auth_credential.oauth2.prompt
+    else:
+      params["prompt"] = "consent"
+    if auth_credential.oauth2.audience:
+      params["audience"] = auth_credential.oauth2.audience
     uri, state = client.create_authorization_url(
-        url=authorization_endpoint, access_type="offline", prompt="consent"
+        url=authorization_endpoint, **params
     )
     exchanged_auth_credential = auth_credential.model_copy(deep=True)
     exchanged_auth_credential.oauth2.auth_uri = uri
