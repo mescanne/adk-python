@@ -189,10 +189,7 @@ class AuthHandler:
         redirect_uri=auth_credential.oauth2.redirect_uri,
     )
     params = {"access_type": "offline"}
-    if auth_credential.oauth2.prompt:
-      params["prompt"] = auth_credential.oauth2.prompt
-    else:
-      params["prompt"] = "consent"
+    params["prompt"] = auth_credential.oauth2.prompt or "consent"
     if auth_credential.oauth2.audience:
       params["audience"] = auth_credential.oauth2.audience
     uri, state = client.create_authorization_url(
