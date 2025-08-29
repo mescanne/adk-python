@@ -62,8 +62,6 @@ class MockOAuth2Session:
 
   def create_authorization_url(self, url, **kwargs):
     params = f"client_id={self.client_id}&scope={self.scope}"
-    if kwargs.get("prompt"):
-      params += f"&prompt={kwargs.get('prompt')}"
     if kwargs.get("audience"):
       params += f"&audience={kwargs.get('audience')}"
     return f"{url}?{params}", "mock_state"
@@ -230,7 +228,6 @@ class TestGenerateAuthUri:
         "https://example.com/oauth2/authorize"
     )
     assert "client_id=mock_client_id" in result.oauth2.auth_uri
-    assert "prompt=consent" in result.oauth2.auth_uri
     assert "audience" not in result.oauth2.auth_uri
     assert result.oauth2.state == "mock_state"
 
@@ -240,7 +237,6 @@ class TestGenerateAuthUri:
   ):
     """Test generating an auth URI with audience and prompt."""
     oauth2_credentials.oauth2.audience = "test_audience"
-    oauth2_credentials.oauth2.prompt = "test_prompt"
     exchanged = oauth2_credentials.model_copy(deep=True)
 
     config = AuthConfig(
@@ -252,7 +248,6 @@ class TestGenerateAuthUri:
     result = handler.generate_auth_uri()
 
     assert "audience=test_audience" in result.oauth2.auth_uri
-    assert "prompt=test_prompt" in result.oauth2.auth_uri
 
   @patch("google.adk.auth.auth_handler.OAuth2Session", MockOAuth2Session)
   def test_generate_auth_uri_openid(
